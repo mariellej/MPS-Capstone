@@ -12,7 +12,9 @@ date = data$DATE
 
 set.seed(1)
 
-X = data.matrix(data[,4:17])
+data[is.na(data[,19]),19]=0
+
+X = data.matrix(data[,c(4:10,19)])
 Y = as.vector(data[,18])
 grid = 10^seq(10,-2,length = 100)
 cv.error = rep(0,9)
