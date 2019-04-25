@@ -1,12 +1,9 @@
-#Lasso model
-
-library("boot")
-library("glmnet")
-library("caret")
+library(tree)
+library(randomForest)
 
 setwd("~/Documents/Git/MPS-Capstone/")
 
-data=read.csv(file='finaldata_noOutlier.csv',header=TRUE)
+data=read.csv(file='finaldata_percentage_noNA.csv',header=TRUE)
 
 date = data$DATE
 
@@ -15,10 +12,12 @@ set.seed(1)
 data[is.na(data[,19]),19]=0
 data[is.na(data[,18]),18]=0
 
-X = data.matrix(data[,c(4:17,19)])
+X = data[,c(4:17,19)]
 Y = as.vector(data[,18])
-grid = 10^seq(10,-2,length = 100)
+
 cv.error = matrix(nrow=9,ncol=11,data=NA)
+
+data = data.frame(Y,X)
 
 for (a in 0:10){
   for (i in 1:9){
@@ -49,21 +48,16 @@ for (a in 0:10){
     Ytrain = Y[trainIndex]
     Ytest = Y[testIndex]
     
-    cv.out=cv.glmnet(Xtrain,Ytrain,alpha=a/10,lambda=grid, family = "gaussian")
-    bestlam=cv.out$lambda.min
+    regTree = randomForest(y=Ytrain,x=Xtrain,importance=TRUE)
+    yhat = predict(regTree,newdata=Xtest)
     
-    ridge.mod=glmnet(Xtrain,Ytrain,alpha=a/10,lambda=bestlam, family = "gaussian")
-    ridge.pred = predict.cv.glmnet(cv.out,s = bestlam, newx = Xtest, type = "link")
-    
-    cv.error[i,a+1] = mean((ridge.pred-Ytest)^2)
+    cv.error[i,a+1] = mean((yhat-Ytest)^2)
     
   }
 }
 
 
-
-#need to calculate training error
-#caluclate bias and variance
-#save coefficeints of each model
-
 mean_error = colMeans(cv.error)
+mean_error
+varUsed(regTree,count=TRUE)
+import = importance(regTree, type =1)
