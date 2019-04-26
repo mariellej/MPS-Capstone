@@ -14,6 +14,7 @@ data[is.na(data[,18]),18]=0
 X = data[,c(4:17,19)]
 Y = as.vector(data[,18])
 cv.error = rep(0,9)
+grid = 10^seq(10,-2,length = 100)
 
 SVR = svm(Y~.,data=X)
 

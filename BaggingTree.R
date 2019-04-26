@@ -2,11 +2,11 @@ library(gbm)
 
 setwd("~/Documents/Git/MPS-Capstone/")
 
-data=read.csv(file='finaldata_percentage_noNA.csv',header=TRUE)
+data=read.csv(file='refineddata.csv',header=TRUE)
 
 date = data$DATE
 
-set.seed(1)
+set.seed(1995)
 
 data[is.na(data[,19]),19]=0
 data[is.na(data[,18]),18]=0
@@ -46,7 +46,7 @@ XY = data.frame(Y,X)
     Ytrain = Y[trainIndex]
     Ytest = Y[testIndex]
     
-    bagTree = gbm(Ytrain~.,data=Xtrain,distribution="gaussian",interaction.depth=4,n.trees=1000)
+    bagTree = gbm(Ytrain~.,data=Xtrain,distribution="gaussian")
     yhat = predict(bagTree,newdata=Xtest,n.trees=100)
     
     cv.error[i] = mean((yhat-Ytest)^2)

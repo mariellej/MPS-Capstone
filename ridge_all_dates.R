@@ -6,7 +6,7 @@ library("caret")
 
 setwd("~/Documents/Git/MPS-Capstone/")
 
-data=read.csv(file='finaldata_noOutlier.csv',header=TRUE)
+data=read.csv(file='refineddata.csv',header=TRUE)
 
 date = data$DATE
 
