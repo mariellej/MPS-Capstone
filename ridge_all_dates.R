@@ -17,18 +17,18 @@ data[is.na(data[,18]),18]=0
 
 X = data.matrix(data[,c(4:17,19)])
 Y = as.vector(data[,18])
-grid = 10^seq(10,-2,length = 100)
-cv.error = matrix(nrow=9,ncol=11,data=NA)
+grid = 10^seq(10,-4,length = 100)
+cv.error = matrix(nrow=81,ncol=11,data=NA)
 
 for (a in 0:10){
-  for (i in 1:9){
+  for (i in 1:81){
     traincount = 1
-    if(i!= 9){
-      while(date[traincount]<1926+i*10){
+    if(i!= 80){
+      while(date[traincount]<1936+i){
         traincount = traincount+1
       }
       testcount = traincount
-      while(date[testcount]<=1926+i*10){
+      while(date[testcount]<=1936+i){
         testcount = testcount+1
       }
     }else{
@@ -53,6 +53,8 @@ for (a in 0:10){
     bestlam=cv.out$lambda.min
     
     ridge.mod=glmnet(Xtrain,Ytrain,alpha=a/10,lambda=bestlam, family = "gaussian")
+    #plot(ridge.mod, xvar="lambda")
+    #plot(ridge.mod)
     ridge.pred = predict.cv.glmnet(cv.out,s = bestlam, newx = Xtest, type = "link")
     
     cv.error[i,a+1] = mean((ridge.pred-Ytest)^2)

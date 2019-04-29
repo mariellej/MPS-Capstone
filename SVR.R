@@ -13,16 +13,26 @@ data[is.na(data[,18]),18]=0
 
 X = data[,c(4:17,19)]
 Y = as.vector(data[,18])
-cv.error = rep(0,9)
-grid = 10^seq(10,-2,length = 100)
 
-SVR = svm(Y~.,data=X)
+YX = data.frame(Y,X)
 
-# perform a grid search
-tuneResult <- tune(svm, Y ~ .,  data = X,
-                   ranges = list(epsilon = seq(0,1,0.1), cost = 2^(2:9)))
-print(tuneResult)
-# Draw the tuning graph
-plot(tuneResult)
+traincount=1
+while(date[traincount]<2017){
+  traincount = traincount+1
+}
+testcount = traincount
+while(date[testcount]<=2017){
+  testcount = testcount+1
+}
 
-tunedModel <- tuneResult$best.model
+trainIndex = seq(1,traincount-1)
+testIndex= seq(traincount,testcount-1)
+
+my_trainset = YX[trainIndex,]
+Xtest = X[testIndex,]
+Ytest = Y[testIndex]
+
+
+tuned_parameters <- tune.svm(Y~., data = my_trainset, gamma = 10^(-5:-1), cost = 10^(-3:1))
+
+

@@ -14,18 +14,18 @@ data[is.na(data[,18]),18]=0
 X = data[,c(4:17,19)]
 Y = as.vector(data[,18])
 
-cv.error = rep(0,9)
+cv.error = rep(0,81)
 
 XY = data.frame(Y,X)
 
-  for (i in 1:9){
+  for (i in 1:81){
     traincount = 1
-    if(i!= 9){
-      while(date[traincount]<1926+i*10){
+    if(i!= 81){
+      while(date[traincount]<1936+i){
         traincount = traincount+1
       }
       testcount = traincount
-      while(date[testcount]<=1926+i*10){
+      while(date[testcount]<=1936+i){
         testcount = testcount+1
       }
     }else{
@@ -46,7 +46,7 @@ XY = data.frame(Y,X)
     Ytrain = Y[trainIndex]
     Ytest = Y[testIndex]
     
-    bagTree = gbm(Ytrain~.,data=Xtrain,distribution="gaussian")
+    bagTree = gbm(Ytrain~.,data=Xtrain,distribution="gaussian",shrinkage=0.01)
     yhat = predict(bagTree,newdata=Xtest,n.trees=100)
     
     cv.error[i] = mean((yhat-Ytest)^2)
@@ -57,4 +57,4 @@ XY = data.frame(Y,X)
 #mean_error = colMeans(cv.error)
 #mean_error
 #varUsed(bagTree,count=TRUE)
-import = importance(bagTree, type =1)
+#import = importance(bagTree, type =1)
